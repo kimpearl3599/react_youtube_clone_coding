@@ -1,10 +1,26 @@
-import React from 'react';
-import './app.css';
+import React, { useEffect, useState } from "react";
+import "./app.css";
+import VideoList from "./components/video_list/video_list";
 
 function App() {
-  const name = 'pearl';
-  return <h1>hello {name}:)</h1>;
-  
+  // 리액트 훅에서 state를 사용하는 방법
+  const [videos, setVideos] = useState([]);
+  // 마운트가 되었을 때 한번만 호출(두번째 인자로 빈 배열)
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=25&key=AIzaSyBLPm4ifgv8I1NpmNsdLAqz6Mg6H_OzWYE",
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => setVideos(result.items))
+      .catch((error) => console.log("error", error));
+  }, []);
+  return <VideoList videos={videos} />;
 }
 
 export default App;
